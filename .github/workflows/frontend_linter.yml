@@ -24,16 +24,20 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: Frontend
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.4.0
 
       - name: Npm install
-        run: npm ci
+        run: npm install
         
       - name: Run linter
         run: npm run lint
