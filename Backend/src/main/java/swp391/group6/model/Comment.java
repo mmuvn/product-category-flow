@@ -1,18 +1,19 @@
 package swp391.group6.model;
 
 import jakarta.persistence.*;
-
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "Comment")
 public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
-    private long ticketID;
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
 
     @Column(nullable = false)
     private String detail;
@@ -20,11 +21,10 @@ public class Comment {
     @Column
     private Timestamp timeCreated;
 
+    // KHỚP với User.java: mappedBy = "user"
     @ManyToOne
-    private User creatorID;
-
-    @ManyToOne
-    private Ticket ticket;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public long getId() {
         return id;
@@ -34,12 +34,12 @@ public class Comment {
         this.id = id;
     }
 
-    public long getTicketID() {
-        return ticketID;
+    public Ticket getTicket() {
+        return ticket;
     }
 
-    public void setTicketID(long ticketID) {
-        this.ticketID = ticketID;
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
 
     public String getDetail() {
@@ -58,19 +58,11 @@ public class Comment {
         this.timeCreated = timeCreated;
     }
 
-    public User getCreatorID() {
-        return creatorID;
+    public User getUser() {
+        return user;
     }
 
-    public void setCreatorID(User creatorID) {
-        this.creatorID = creatorID;
-    }
-
-    public Ticket getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
