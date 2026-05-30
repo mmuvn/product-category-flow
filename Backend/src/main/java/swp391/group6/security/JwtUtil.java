@@ -9,7 +9,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private final String SECRET = "your-secret-key";
-    private final long EXPIRATION = 86400000; // 24 hours
+    private final long EXPIRATION = 86400000;
 
     public String generateToken(String email, String role) {
         return JWT.create()
