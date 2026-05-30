@@ -1,6 +1,7 @@
 package swp391.group6.model;
 
 import jakarta.persistence.*;
+import swp391.group6.entity.Product;
 
 @Entity
 @Table(name = "OrderDetail")
