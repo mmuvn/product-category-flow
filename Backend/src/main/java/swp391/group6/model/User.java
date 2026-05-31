@@ -48,7 +48,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Order> orderList;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "customer")
     private ShoppingCart shoppingCart;
 
     public long getId() { return id; }
