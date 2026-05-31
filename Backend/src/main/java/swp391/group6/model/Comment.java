@@ -22,8 +22,8 @@ public class Comment {
     private Timestamp timeCreated;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "creator_id")
+    private User commentCreator;
 
     public long getId() {
         return id;
@@ -57,11 +57,11 @@ public class Comment {
         this.timeCreated = timeCreated;
     }
 
-    public User getUser() {
-        return user;
+    public User getCommentCreator() {
+        return commentCreator;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCommentCreator(User commentCreator) {
+        this.commentCreator = commentCreator;
     }
 }
