@@ -1,10 +1,9 @@
 package swp391.group6.model;
 
 import jakarta.persistence.*;
-import swp391.group6.entity.Product;
 
 @Entity
-@Table(name = "ShoppingCartEntry")
+@Table(name = "shopping_cart_entry")
 public class ShoppingCartEntry {
 
     @EmbeddedId
@@ -17,7 +16,7 @@ public class ShoppingCartEntry {
 
     @ManyToOne
     @MapsId("shoppingCartId")
-    @JoinColumn(name = "shopping_cart_id")
+    @JoinColumn(name = "cart_id")
     private ShoppingCart shoppingCart;
 
     @Column(nullable = false)

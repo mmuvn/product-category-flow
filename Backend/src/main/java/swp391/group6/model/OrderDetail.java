@@ -1,10 +1,9 @@
 package swp391.group6.model;
 
 import jakarta.persistence.*;
-import swp391.group6.entity.Product;
 
 @Entity
-@Table(name = "OrderDetail")
+@Table(name = "order_detail")
 public class OrderDetail {
 
     @EmbeddedId
@@ -23,7 +22,7 @@ public class OrderDetail {
     @Column(nullable = false)
     private int quantity;
 
-    @Column(nullable = false)
+    @Column(name = "price_paid", nullable = false)
     private double pricePaid;
 
     public OrderDetailId getId() { return id; }
