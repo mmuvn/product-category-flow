@@ -1,4 +1,4 @@
-package swp391.group6.application;
+package swp391.group6;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
