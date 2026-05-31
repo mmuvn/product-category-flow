@@ -6,14 +6,20 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "Orders")
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
+    @JoinColumn(name = "customer_id")
     private User user;
+
+    // DB has shipper_id as a nullable FK to users
+    @ManyToOne
+    @JoinColumn(name = "shipper_id")
+    private User shipper;
 
     @Column
     private String shippingAddress;
