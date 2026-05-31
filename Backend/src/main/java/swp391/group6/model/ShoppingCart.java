@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "ShoppingCarts")
+@Table(name = "shopping_carts")
 public class ShoppingCart {
 
     @Id
@@ -12,8 +12,8 @@ public class ShoppingCart {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private User customer;
 
     @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShoppingCartEntry> items;
@@ -21,8 +21,8 @@ public class ShoppingCart {
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getCustomer() { return customer; }
+    public void setCustomer(User customer) { this.customer =customer; }
 
     public List<ShoppingCartEntry> getItems() { return items; }
     public void setItems(List<ShoppingCartEntry> items) { this.items = items; }

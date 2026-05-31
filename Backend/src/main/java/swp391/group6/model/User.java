@@ -33,11 +33,14 @@ public class User {
     @Column
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "commentCreator")
     private List<Comment> commentList;
 
-    @OneToMany(mappedBy = "creator")
+    @OneToMany(mappedBy = "ticketCreator")
     private List<Ticket> ticketList;
+
+    @OneToMany(mappedBy = "assignee")
+    private List<Ticket> assignedTicketList;
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviewList;
@@ -77,6 +80,9 @@ public class User {
 
     public List<Ticket> getTicketList() { return ticketList; }
     public void setTicketList(List<Ticket> ticketList) { this.ticketList = ticketList; }
+
+    public List<Ticket> getAssignedTicketList(){ return assignedTicketList; }
+    public void setAssignedTicketList(List<Ticket> assignedTicketList){ this.assignedTicketList = assignedTicketList;}
 
     public List<Review> getReviewList() { return reviewList; }
     public void setReviewList(List<Review> reviewList) { this.reviewList = reviewList; }

@@ -21,14 +21,13 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-            throw new RuntimeException("Invalid email or password");
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword()))
+            return null;
 
         if (!user.isStatus())
-            throw new RuntimeException("Account is disabled");
+            return null;
 
         String role = user.getRole() != null ? user.getRole().getName() : "CUSTOMER";
         String token = jwtUtil.generateToken(user.getEmail(), role);

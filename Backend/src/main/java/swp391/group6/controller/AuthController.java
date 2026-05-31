@@ -1,5 +1,8 @@
 package swp391.group6.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import swp391.group6.dto.LoginRequest;
 import swp391.group6.dto.LoginResponse;
 import swp391.group6.service.AuthService;
@@ -17,7 +20,25 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request,
+                                               HttpServletResponse response) {
+        LoginResponse loginResponse = authService.login(request);
+
+        if (loginResponse == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        Cookie cookie = new Cookie("jwt", loginResponse.getToken());
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(new LoginResponse(
+                null,
+                loginResponse.getEmail(),
+                loginResponse.getFullName(),
+                loginResponse.getRole()
+        ));
     }
 }

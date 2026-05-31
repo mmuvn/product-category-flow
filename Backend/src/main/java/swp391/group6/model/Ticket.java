@@ -19,7 +19,11 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
-    private User creator;
+    private User ticketCreator;
+
+    @ManyToOne
+    @JoinColumn(name = "assignee_id")
+    private User assignee;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -47,8 +51,11 @@ public class Ticket {
     public String getDetail() { return detail; }
     public void setDetail(String detail) { this.detail = detail; }
 
-    public User getCreator() { return creator; }
-    public void setCreator(User creator) { this.creator = creator; }
+    public User getTicketCreator() { return ticketCreator; }
+    public void setTicketCreator(User ticketCreator) { this.ticketCreator = ticketCreator; }
+
+    public User getAssignee(){ return assignee;}
+    public void setAssignee(User assignee){ this.assignee = assignee;}
 
     public TicketState getTicketState() { return ticketState; }
     public void setTicketState(TicketState ticketState) { this.ticketState = ticketState; }
