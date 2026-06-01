@@ -19,7 +19,7 @@ public class JWTUtil {
     private static Algorithm algorithm = Algorithm.HMAC256("a-string-for-testing");
     private static String jwtIssuer = "a";
     private static long lifetime = 86400L;
-    private static String cookieName = "a";
+    private static String cookieName = "hihi";
 
     private JWTUtil() {}
 
