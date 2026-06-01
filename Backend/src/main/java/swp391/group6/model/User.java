@@ -1,6 +1,7 @@
 package swp391.group6.model;
 
 import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -25,12 +26,13 @@ public class User {
     private String phone;
 
     @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @Column
     private boolean status;
 
-    @Column
+    @Column(name = "created_at")
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "commentCreator")
