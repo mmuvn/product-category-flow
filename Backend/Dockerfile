@@ -24,5 +24,4 @@ USER spring:spring
 # Expose the application port
 EXPOSE 8080
 # Run the application
-# Run the application with timezone set as JVM arg to prevent PostgreSQL rejecting "Asia/Saigon" on Windows
-ENTRYPOINT ["java", "-Duser.timezone=Asia/Ho_Chi_Minh", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
