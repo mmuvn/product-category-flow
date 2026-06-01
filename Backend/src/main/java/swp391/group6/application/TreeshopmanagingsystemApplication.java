@@ -5,10 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-// scanBasePackages required because main class is in .application subpackage
-// EntityScan scoped to model/ where all JPA entities live
-// EnableJpaRepositories scoped to repository/ where all Spring Data interfaces live
 @SpringBootApplication(scanBasePackages = "swp391.group6")
+// Two annotation below serve JPA, do not remove
 @EnableJpaRepositories(basePackages = "swp391.group6.repository")
 @EntityScan(basePackages = "swp391.group6.model")
 public class TreeshopmanagingsystemApplication {

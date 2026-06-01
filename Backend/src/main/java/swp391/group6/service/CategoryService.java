@@ -13,11 +13,9 @@ import java.util.Optional;
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
 
-    public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository) {
+    public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        this.productRepository = productRepository;
     }
 
     public List<CategoryResponse> listCategories() {
@@ -72,13 +70,10 @@ public class CategoryService {
     /**
      * Returns true if deleted, false if not found, null if it has products.
      */
-    public Boolean deleteCategory(Long id) {
+    public boolean deleteCategory(Long id) {
         Optional<Category> existing = categoryRepository.findById(id);
-        if (existing.isEmpty()) {
+        if (existing.isEmpty() || !existing.get().getProductList().isEmpty()) {
             return false;
-        }
-        if (productRepository.existsByCategoryId(id)) {
-            return null;
         }
         categoryRepository.delete(existing.get());
         return true;

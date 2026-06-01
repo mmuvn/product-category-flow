@@ -53,12 +53,10 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        Boolean result = categoryService.deleteCategory(id);
-        if (result == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        boolean result = categoryService.deleteCategory(id);
+
         if (!result) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.noContent().build();
     }

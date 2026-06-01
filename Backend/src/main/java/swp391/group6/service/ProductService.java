@@ -3,6 +3,7 @@ package swp391.group6.service;
 import org.springframework.stereotype.Service;
 import swp391.group6.dto.ProductRequest;
 import swp391.group6.dto.ProductResponse;
+import swp391.group6.model.Category;
 import swp391.group6.model.Product;
 import swp391.group6.repository.CategoryRepository;
 import swp391.group6.repository.ProductRepository;
@@ -22,13 +23,12 @@ public class ProductService {
     }
 
     public List<ProductResponse> listProducts(String keyword, Long categoryId, Boolean status) {
-        String normalizedKeyword = keyword == null ? null : keyword.trim().toLowerCase();
         return productRepository.findAll().stream()
-                .filter(product -> normalizedKeyword == null
-                        || normalizedKeyword.isEmpty()
-                        || containsIgnoreCase(product.getName(), normalizedKeyword)
-                        || containsIgnoreCase(product.getSku(), normalizedKeyword))
-                .filter(product -> categoryId == null || categoryId.equals(product.getCategoryId()))
+                .filter(product -> keyword == null
+                        || keyword.isEmpty()
+                        || containsIgnoreCase(product.getName(), keyword)
+                        || containsIgnoreCase(product.getSku(), keyword))
+                .filter(product -> categoryId == null || categoryId.equals(product.getCategory().getId()))
                 .filter(product -> status == null || status.equals(product.isStatus()))
                 .map(this::toResponse)
                 .toList();
@@ -42,8 +42,8 @@ public class ProductService {
      * Returns the created product, or empty if validation fails or SKU already exists.
      */
     public Optional<ProductResponse> createProduct(ProductRequest request) {
-        String name = normalizeName(request.getName());
-        String sku = normalizeSku(request.getSku());
+        String name = trimToNull(request.getName());
+        String sku = trimToNull(request.getSku());
         BigDecimal price = request.getPrice();
 
         if (name == null || sku == null || price == null || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -70,8 +70,8 @@ public class ProductService {
             return Optional.empty();
         }
 
-        String name = normalizeName(request.getName());
-        String sku = normalizeSku(request.getSku());
+        String name = trimToNull(request.getName());
+        String sku = trimToNull(request.getSku());
         BigDecimal price = request.getPrice();
 
         if (name == null || sku == null || price == null || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -86,6 +86,7 @@ public class ProductService {
 
         Product product = existing.get();
         applyRequest(product, request, name, sku, price);
+        product.setId(id);
         return Optional.of(toResponse(productRepository.save(product)));
     }
 
@@ -104,7 +105,9 @@ public class ProductService {
     }
 
     private void applyRequest(Product product, ProductRequest request, String name, String sku, BigDecimal price) {
-        product.setCategoryId(request.getCategoryId());
+        Category category = new Category();
+        category.setId(request.getCategoryId());
+        product.setCategory(category);
         product.setName(name);
         product.setPrice(price);
         product.setStock(request.getStock() == null ? 0 : request.getStock());
@@ -115,21 +118,13 @@ public class ProductService {
     private ProductResponse toResponse(Product product) {
         ProductResponse response = new ProductResponse();
         response.setId(product.getId());
-        response.setCategoryId(product.getCategoryId());
+        response.setCategoryId(product.getCategory().getId());
         response.setName(product.getName());
         response.setPrice(product.getPrice());
         response.setStock(product.getStock());
         response.setStatus(product.isStatus());
         response.setSku(product.getSku());
         return response;
-    }
-
-    private String normalizeName(String name) {
-        return trimToNull(name);
-    }
-
-    private String normalizeSku(String sku) {
-        return trimToNull(sku);
     }
 
     private String trimToNull(String value) {
@@ -141,6 +136,6 @@ public class ProductService {
     }
 
     private boolean containsIgnoreCase(String value, String keyword) {
-        return value != null && value.toLowerCase().contains(keyword);
+        return value != null && keyword != null && value.toLowerCase().contains(keyword.toLowerCase());
     }
 }
