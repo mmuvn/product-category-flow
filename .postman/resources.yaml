@@ -1,0 +1,14 @@
+# Use this workspace to collaborate
+workspace:
+  id: e4274028-7827-42f5-893e-7b3bc360fbf7
+
+localResources:
+  docs:
+    - ..\Frontend\README.md
+    - ..\README.md
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ..\postman\collections\TreeShop Ticket API: 36bb7d91-d951-4043-ac01-821c0d957bde
