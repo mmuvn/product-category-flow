@@ -1,0 +1,22 @@
+$kind: http-request
+description: Creates a new ticket. CreatorId 5 maps to 'Hoàng Minh Tuấn' in your DB.
+url: http://localhost:8081/api/tickets
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: "{\r
+
+    \    \"title\": \"Lá cây Monstera bị vàng\",\r
+
+    \    \"detail\": \"Tôi mới mua cây Monstera được 3 ngày nhưng lá bắt đầu có đốm vàng. Xin shop tư vấn cách khắc phục.\",\r
+
+    \    \"ticketType\": \"Tư vấn\",\r
+
+    \    \"priority\": \"HIGH\",\r
+
+    \    \"creatorId\": 5\r
+
+    }"
+order: 1000

@@ -1,0 +1,2 @@
+$kind: collection
+description: Updated endpoints for the TreeShop Ticket Management System. Tests creation, queue retrieval, customer retrieval, and status updates.

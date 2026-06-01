@@ -1,0 +1,12 @@
+$kind: http-request
+description: Updates a ticket's status and optionally assigns an agent.
+url: http://localhost:8081/api/tickets/1/status?newState=PROCESSING&agentId=4
+method: PUT
+queryParams:
+  - key: newState
+    value: PROCESSING
+    description: Must match your TicketState ENUM exactly.
+  - key: agentId
+    value: "4"
+    description: Assigns the ticket to Agent ID 4 (Phạm Thị Support).
+order: 5000

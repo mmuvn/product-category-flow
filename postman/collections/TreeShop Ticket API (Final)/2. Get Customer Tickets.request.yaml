@@ -1,0 +1,5 @@
+$kind: http-request
+description: Retrieves all tickets created by customer ID 5.
+url: http://localhost:8081/api/tickets/customer/5
+method: GET
+order: 2000

@@ -26,7 +26,7 @@ public class Ticket {
     private User assignee;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "state", nullable = false)
     private TicketState ticketState;
 
     @Enumerated(EnumType.STRING)
