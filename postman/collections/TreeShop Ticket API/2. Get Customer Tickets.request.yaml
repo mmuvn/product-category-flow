@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8081/api/tickets/customer/1
+method: GET
+order: 2000

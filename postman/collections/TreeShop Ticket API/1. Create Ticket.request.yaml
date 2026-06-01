@@ -1,0 +1,21 @@
+$kind: http-request
+url: http://localhost:8081/api/tickets
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: "{\r
+
+    \    \"title\": \"My bonsai tree is turning yellow\",\r
+
+    \    \"detail\": \"I watered it yesterday but the leaves are falling off.\",\r
+
+    \    \"ticketType\": \"PLANT_CARE\",\r
+
+    \    \"priority\": \"HIGH\",\r
+
+    \    \"creatorId\": 1\r
+
+    }"
+order: 1000

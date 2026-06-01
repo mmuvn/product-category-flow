@@ -1,0 +1,7 @@
+$kind: http-request
+url: http://localhost:8081/api/tickets/1/status?newState=RESOLVED&agentId=2
+method: PUT
+queryParams:
+  newState: RESOLVED
+  agentId: "2"
+order: 5000
