@@ -1,9 +1,10 @@
 package swp391.group6.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import swp391.group6.dto.TicketDTO;
-import swp391.group6.dto.TicketRequestDTO;
+import swp391.group6.dto.TicketRequest;
 import swp391.group6.model.Priority;
 import swp391.group6.model.Ticket;
 import swp391.group6.model.TicketState;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TicketService {
 
     @Autowired
@@ -26,15 +28,18 @@ public class TicketService {
     private UserRepository userRepository;
 
     // UC 16: Customer creates a ticket
-    public TicketDTO createTicket(TicketRequestDTO request) {
+    public TicketDTO createTicket(TicketRequest request) {
         User creator = userRepository.findById(request.getCreatorId())
-                .orElseThrow(() -> new RuntimeException("Customer responsible for Ticket not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         Ticket ticket = new Ticket();
         ticket.setTitle(request.getTitle());
         ticket.setDetail(request.getDetail());
         ticket.setTicketType(request.getTicketType());
         ticket.setPriority(Priority.valueOf(request.getPriority().toUpperCase()));
-        ticket.setCreator(creator);
+        
+        // Default values for a brand new ticket
+        ticket.setTicketCreator(creator);
         ticket.setTicketState(TicketState.CREATED);
         ticket.setTimeCreated(new Timestamp(System.currentTimeMillis()));
 
@@ -44,7 +49,7 @@ public class TicketService {
 
     // UC 16: Customer views their own tickets
     public List<TicketDTO> getCustomerTickets(long customerId) {
-        return ticketRepository.findByCreatorId(customerId).stream()
+        return ticketRepository.findByTicketCreator(customerId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -56,7 +61,7 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
-    // UC 12 & 16: Update ticket status
+    // UC 12 & 16: Update ticket status (Agent sets to Progress, Customer sets to Resolved)
     public TicketDTO updateTicketStatus(long ticketId, String newStateStr, Long agentId) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
@@ -68,7 +73,7 @@ public class TicketService {
             ticket.setTimeResolved(new Timestamp(System.currentTimeMillis()));
         }
 
-        // If a Customer Support Agent is taking the ticket, assign them
+        // If an agent is taking the ticket, assign them
         if (agentId != null) {
             User agent = userRepository.findById(agentId).orElse(null);
             ticket.setAssignee(agent);
@@ -77,9 +82,9 @@ public class TicketService {
         Ticket updatedTicket = ticketRepository.save(ticket);
         return convertToDTO(updatedTicket);
     }
-
+    
     public Optional<TicketDTO> getTicketById(long id) {
-         return ticketRepository.findById(id).map(this::convertToDTO);
+        return ticketRepository.findById(id).map(this::convertToDTO);
     }
 
     private TicketDTO convertToDTO(Ticket ticket) {
@@ -91,13 +96,13 @@ public class TicketService {
         dto.setPriority(ticket.getPriority().name());
         dto.setTicketState(ticket.getTicketState().name());
         dto.setTimeCreated(ticket.getTimeCreated().toString());
-
+        
         if (ticket.getTimeResolved() != null) {
             dto.setTimeResolved(ticket.getTimeResolved().toString());
         }
 
-        dto.setCreatorId(ticket.getCreator().getId());
-        dto.setCreatorName(ticket.getCreator().getFullName());
+        dto.setCreatorId(ticket.getTicketCreator().getId());
+        dto.setCreatorName(ticket.getTicketCreator().getFullName());
 
         if (ticket.getAssignee() != null) {
             dto.setAssigneeId(ticket.getAssignee().getId());
