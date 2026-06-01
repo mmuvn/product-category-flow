@@ -1,4 +1,4 @@
-package swp391.group6;
+package swp391.group6.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "swp391.group6.repository")
 @EntityScan(basePackages = "swp391.group6.model")
 public class TreeshopmanagingsystemApplication {
+    static {
+        System.setProperty("user.timezone", "Asia/Ho_Chi_Minh");
+    }
 
 	static {
 		System.setProperty("user.timezone", "Asia/Ho_Chi_Minh");
