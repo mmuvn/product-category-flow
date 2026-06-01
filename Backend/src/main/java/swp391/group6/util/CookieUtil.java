@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public final class CookieUtil {
     //TODO: remove hardcode value when migrate to docker
     private static Long cookieMaxAge = 86400L;
-    private static String cookieName = "a";
+    private static String cookieName = "hihi";
 
     private CookieUtil() {}
 
