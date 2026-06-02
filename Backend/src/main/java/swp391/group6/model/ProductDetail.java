@@ -19,11 +19,9 @@ public class ProductDetail {
     private String description;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "JSON")
     private String variants;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "JSON")
     private String images;
 
     public long getId() {
