@@ -1,6 +1,8 @@
 package swp391.group6.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "product_details")
@@ -9,20 +11,18 @@ public class ProductDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @OneToOne
+    @JoinColumn(name = "product_id", nullable = false, unique = true)
+    private Product product;
+
     @Column
     private String description;
 
-    //TODO map variant here, same with below
-    @Transient
+    @JdbcTypeCode(SqlTypes.JSON)
     private String variants;
 
-    //TODO map image here, the database return type JSON #Other and can't convert to String
-    @Transient
+    @JdbcTypeCode(SqlTypes.JSON)
     private String images;
-
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
 
     public long getId() {
         return id;
@@ -30,6 +30,14 @@ public class ProductDetail {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public String getDescription() {
@@ -54,13 +62,5 @@ public class ProductDetail {
 
     public void setImages(String images) {
         this.images = images;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 }
