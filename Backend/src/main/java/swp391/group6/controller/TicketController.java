@@ -34,7 +34,7 @@ public class TicketController {
     }
 
     // Agent & Customer views their own tickets
-    @GetMapping("/")
+    @GetMapping("/{userId}")
     public ResponseEntity<List<Ticket>> getAuthorizedTickets(@PathVariable long userId) {
         try {
             List<Ticket> tickets = ticketService.getAuthorizedTickets(userId);
