@@ -1,11 +1,14 @@
 package swp391.group6.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import swp391.group6.dto.LoginResponse;
 import swp391.group6.model.Ticket;
 import swp391.group6.dto.TicketRequest;
 import swp391.group6.service.TicketService;
+import swp391.group6.util.JWTUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,37 +19,40 @@ public class TicketController {
 
     private final TicketService ticketService;
 
-    public TicketController(TicketService ticketService){
+    public TicketController(TicketService ticketService) {
         this.ticketService = ticketService;
     }
 
     // Customer creates a ticket
     @PostMapping
-    public ResponseEntity<Ticket>createTicket(@RequestBody TicketRequest request) {
-        try {
-            Ticket ticket = ticketService.createTicket(request);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(ticket);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
+    public ResponseEntity<Ticket> createTicket(@RequestBody TicketRequest request) {
+        Ticket ticket = ticketService.createTicket(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ticket);
     }
 
     // Agent & Customer views their own tickets
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Ticket>> getAuthorizedTickets(@PathVariable long userId) {
+    @GetMapping("/")
+    public ResponseEntity<?> getAuthorizedTickets(HttpServletRequest request) {
         try {
-            List<Ticket> tickets = ticketService.getAuthorizedTickets(userId);
+            LoginResponse currentUser = JWTUtil.getUser(request);
+
+            if (currentUser == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            String email = currentUser.getEmail();
+            List<Ticket> tickets = ticketService.getAuthorizedTicketsByEmail(email);
+
             return ResponseEntity.ok(tickets);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     // View specific ticket details
-    @GetMapping("/details/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable long id) {
         try {
             Optional<Ticket> ticket = ticketService.getTicketById(id);

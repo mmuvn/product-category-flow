@@ -28,7 +28,7 @@ public class TicketService {
     // UC 16: Customer creates a ticket
     public Ticket createTicket(TicketRequest request) {
         if(request.getDetail() == null || request.getDetail().isBlank()){
-            throw new RuntimeException("Ticket detail is null or blank.");
+            return null;
         }
 
         Optional<User> creator = userRepository.findById(request.getCreatorId());
@@ -52,6 +52,13 @@ public class TicketService {
     public List<Ticket> getAuthorizedTickets(long userId) {
         // Todo: Make tickets filterable by state
         return new ArrayList<>(ticketRepository.findTicketsByCreatorOrAssignee(userId));
+    }
+
+    public List<Ticket> getAuthorizedTicketsByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found for email: " + email));
+
+        return ticketRepository.findTicketsByCreatorOrAssignee(user.getId());
     }
 
     // UC 12 & 16: Update ticket status (Agent sets to Progress, Customer sets to Resolved)
