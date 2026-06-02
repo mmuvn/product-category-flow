@@ -46,7 +46,7 @@ public class TicketController {
     }
 
     // View specific ticket details
-    @GetMapping("/{id}")
+    @GetMapping("/details/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable long id) {
         try {
             Optional<Ticket> ticket = ticketService.getTicketById(id);
