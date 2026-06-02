@@ -27,44 +27,35 @@ public class TicketController {
     @PostMapping
     public ResponseEntity<Ticket> createTicket(@RequestBody TicketRequest request) {
         Ticket ticket = ticketService.createTicket(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ticket);
+        if (ticket == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(ticket);
     }
 
     // Agent & Customer views their own tickets
     @GetMapping("/")
     public ResponseEntity<List<Ticket>> getAuthorizedTickets(HttpServletRequest request) {
-        try {
-            LoginResponse currentUser = JWTUtil.getUser(request);
+        LoginResponse currentUser = JWTUtil.getUser(request);
 
-            if (currentUser == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-
-            String email = currentUser.getEmail();
-            List<Ticket> tickets = ticketService.getAuthorizedTicketsByEmail(email);
-
-            return ResponseEntity.ok(tickets);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        String email = currentUser.getEmail();
+        List<Ticket> tickets = ticketService.getAuthorizedTicketsByEmail(email);
+
+        return ResponseEntity.ok(tickets);
     }
 
     // View specific ticket details
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable long id) {
-        try {
-            Optional<Ticket> ticket = ticketService.getTicketById(id);
-            if (ticket.isPresent()) {
-                return ResponseEntity.ok(ticket.get());
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(null);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+        Optional<Ticket> ticket = ticketService.getTicketById(id);
+        if (ticket.isPresent()) {
+            return ResponseEntity.ok(ticket.get());
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -77,10 +68,10 @@ public class TicketController {
         try {
             Ticket updatedTicket = ticketService.updateTicketStatus(id, newState, agentId);
             return ResponseEntity.ok(updatedTicket);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+        } catch (IllegalArgumentException e) { // Catches bad enum
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
