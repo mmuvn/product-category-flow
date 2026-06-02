@@ -1,15 +1,10 @@
 package swp391.group6.service;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import swp391.group6.model.Ticket;
 import swp391.group6.dto.TicketRequest;
-import swp391.group6.model.Priority;
-import swp391.group6.model.Ticket;
-import swp391.group6.model.TicketState;
-import swp391.group6.model.User;
+import swp391.group6.model.*;
 import swp391.group6.repository.TicketRepository;
 import swp391.group6.repository.UserRepository;
 
@@ -17,17 +12,18 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class TicketService {
 
-    @Autowired
-    private TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public TicketService(TicketRepository ticketRepository, UserRepository userRepository){
+        this.ticketRepository = ticketRepository;
+        this.userRepository = userRepository;
+    }
 
     // UC 16: Customer creates a ticket
     public Ticket createTicket(TicketRequest request) {
