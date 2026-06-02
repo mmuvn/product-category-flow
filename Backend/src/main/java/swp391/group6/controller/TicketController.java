@@ -1,13 +1,10 @@
 package swp391.group6.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import swp391.group6.dto.TicketResponse;
 import swp391.group6.model.Ticket;
 import swp391.group6.dto.TicketRequest;
-import swp391.group6.model.Ticket;
 import swp391.group6.service.TicketService;
 
 import java.util.List;
