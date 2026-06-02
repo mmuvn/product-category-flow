@@ -33,7 +33,7 @@ public class TicketController {
 
     // Agent & Customer views their own tickets
     @GetMapping("/")
-    public ResponseEntity<?> getAuthorizedTickets(HttpServletRequest request) {
+    public ResponseEntity<List<Ticket>> getAuthorizedTickets(HttpServletRequest request) {
         try {
             LoginResponse currentUser = JWTUtil.getUser(request);
 
@@ -47,7 +47,7 @@ public class TicketController {
             return ResponseEntity.ok(tickets);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
