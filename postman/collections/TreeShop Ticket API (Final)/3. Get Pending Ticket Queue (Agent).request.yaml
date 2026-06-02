@@ -1,5 +1,0 @@
-$kind: http-request
-description: Retrieves all tickets that are not in the RESOLVED state for agents to pick up.
-url: http://localhost:8081/api/tickets/queue
-method: GET
-order: 3000
