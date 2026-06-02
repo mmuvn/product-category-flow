@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -25,12 +25,13 @@ public class User {
     private String phone;
 
     @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @Column
     private boolean status;
 
-    @Column
+    @Column(name = "created_at")
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "commentCreator")
