@@ -17,6 +17,8 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
@@ -30,12 +32,23 @@ public class UserService {
     }
 
     public UserDTO createUser(UserDTO userDTO) {
-        //hashed password before saving
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        validateUserForCreate(userDTO);
         User user = convertToEntity(userDTO);
-        user.setPassword(encoder.encode(userDTO.getPassword()));
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
+    }
+
+    private void validateUserForCreate(UserDTO userDTO) {
+        if (userDTO == null) {
+            throw new IllegalArgumentException("User data is required");
+        }
+        if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (userDTO.getPassword() == null || userDTO.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password is required");
+        }
     }
     
     public UserDTO updateUser(long id, UserDTO userDTO) {

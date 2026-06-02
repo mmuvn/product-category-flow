@@ -1,6 +1,5 @@
 package swp391.group6.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,22 +12,19 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
 public class UserController {
-    
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     //get all users
     @GetMapping
-    public ResponseEntity<ResponseDTO<List<UserDTO>>> getAllUsers() {
-        try {
-            List<UserDTO> users = userService.getAllUsers();
-            ResponseDTO<List<UserDTO>> response = new ResponseDTO<>(200, "Users retrieved successfully", users);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            ResponseDTO<List<UserDTO>> response = new ResponseDTO<>(500, "Error retrieving users");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
     //get user by id
     @GetMapping("/{id}")
@@ -93,32 +89,32 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-    //search user by name 
-    @GetMapping("/search/{query}")
-    public ResponseEntity<ResponseDTO<List<UserDTO>>> searchUsers(@PathVariable String query) {
+    //search user by name or email
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDTO<?>> searchUsers(@RequestParam(required = false) String query,
+                                                      @RequestParam(required = false) String email) {
         try {
+            if (email != null && !email.isBlank()) {
+                Optional<UserDTO> user = userService.getUserByEmail(email);
+                if (user.isPresent()) {
+                    ResponseDTO<UserDTO> response = new ResponseDTO<>(200, "User retrieved successfully", user.get());
+                    return ResponseEntity.ok(response);
+                } else {
+                    ResponseDTO<UserDTO> response = new ResponseDTO<>(404, "User not found");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+                }
+            }
+
+            if (query == null || query.isBlank()) {
+                ResponseDTO<Void> response = new ResponseDTO<>(400, "Search query or email is required");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
             List<UserDTO> users = userService.searchUsers(query);
             ResponseDTO<List<UserDTO>> response = new ResponseDTO<>(200, "Search completed", users);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            ResponseDTO<List<UserDTO>> response = new ResponseDTO<>(500, "Error searching users");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-    //search user by email
-    @GetMapping("/email/{email}")
-    public ResponseEntity<ResponseDTO<UserDTO>> getUserByEmail(@PathVariable String email) {
-        try {
-            Optional<UserDTO> user = userService.getUserByEmail(email);
-            if (user.isPresent()) {
-                ResponseDTO<UserDTO> response = new ResponseDTO<>(200, "User retrieved successfully", user.get());
-                return ResponseEntity.ok(response);
-            } else {
-                ResponseDTO<UserDTO> response = new ResponseDTO<>(404, "User not found");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-            }
-        } catch (Exception e) {
-            ResponseDTO<UserDTO> response = new ResponseDTO<>(500, "Error retrieving user");
+            ResponseDTO<Void> response = new ResponseDTO<>(500, "Error searching users");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
